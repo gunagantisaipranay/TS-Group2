@@ -1,8 +1,8 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const { getCutoffAnalysis, getStudyRecommendations, getSkipSuggestions } = require("./src/coach");
-const { getSubjects } = require("./src/subjects");
+const { getCutoffAnalysis, getStudyRecommendations, getSkipSuggestions } = require("./src/coach.cjs");
+const { getSubjects } = require("./src/subjects.cjs");
 
 const PORT = process.env.PORT || 3000;
 
