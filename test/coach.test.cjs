@@ -5,7 +5,7 @@ const {
   getStudyRecommendations,
   getSkipSuggestions,
   DEFAULT_CUTOFF,
-} = require("../src/coach");
+} = require("../src/coach.cjs");
 
 describe("getCutoffAnalysis", () => {
   it("should return 'below' when scores are below cutoff", () => {

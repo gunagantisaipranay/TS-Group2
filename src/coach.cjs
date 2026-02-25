@@ -4,7 +4,7 @@
  * Provides study recommendations, skip suggestions, and cutoff analysis.
  */
 
-const { getSubjects, getSubjectById, getTotalMarks } = require("./subjects");
+const { getSubjects, getSubjectById, getTotalMarks } = require("./subjects.cjs");
 
 /** Default previous-year cutoff marks (can be updated) */
 const DEFAULT_CUTOFF = 320;

@@ -1,6 +1,6 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const { getSubjects, getSubjectById, getTotalMarks } = require("../src/subjects");
+const { getSubjects, getSubjectById, getTotalMarks } = require("../src/subjects.cjs");
 
 describe("subjects", () => {
   it("should return all subjects", () => {
