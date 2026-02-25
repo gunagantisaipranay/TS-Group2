@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TS Group 2 AI Coach</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎓 TS Group 2 AI Coach</h1>
+    <p>Know what to study, what to skip, and how far you are from the cutoff</p>
+  </header>
+
+  <main>
+    <section id="score-input" class="card">
+      <h2>📝 Enter Your Scores</h2>
+      <p class="hint">Enter your current or expected scores for each paper</p>
+      <form id="score-form">
+        <div id="subject-fields"></div>
+        <div class="form-row">
+          <label for="cutoff">Target Cutoff Marks (optional):</label>
+          <input type="number" id="cutoff" placeholder="320" min="0" max="600" />
+        </div>
+        <button type="submit" class="btn-primary">🔍 Analyze My Preparation</button>
+      </form>
+    </section>
+
+    <section id="results" class="card hidden">
+      <h2>📊 Your Analysis</h2>
+
+      <div id="cutoff-result" class="result-block"></div>
+
+      <h3>📚 Study Recommendations</h3>
+      <div id="recommendations"></div>
+
+      <h3>⏭️ What You Can Skip</h3>
+      <div id="skip-suggestions"></div>
+
+      <h3>📖 Must Study Topics</h3>
+      <div id="must-study"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>TS Group 2 AI Coach &mdash; Built to help TSPSC Group 2 aspirants succeed</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

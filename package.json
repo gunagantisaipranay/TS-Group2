@@ -1,0 +1,22 @@
+{
+  "name": "ts-group2",
+  "version": "1.0.0",
+  "description": "AI Coach that tells TS Group 2 aspirants what to study, what to skip, and how far they are from cutoff",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gunagantisaipranay/TS-Group2.git"
+  },
+  "keywords": ["tspsc", "group2", "exam-prep", "ai-coach", "study-planner"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gunagantisaipranay/TS-Group2/issues"
+  },
+  "homepage": "https://github.com/gunagantisaipranay/TS-Group2#readme"
+}
