@@ -1,58 +1,73 @@
-# TS Group 2 AI Coach
+# React + TypeScript + Vite
 
-🎓 AI Coach that tells TSPSC Group 2 aspirants what to study, what to skip, and how far they are from the cutoff.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Features
+Currently, two official plugins are available:
 
-- **Cutoff Analysis** — Enter your scores and see how far you are from the cutoff
-- **Study Recommendations** — Get prioritized recommendations on which subjects to focus on
-- **Skip Suggestions** — Know which topics you can safely deprioritize
-- **Topic Breakdown** — See the full list of must-study topics per subject
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Getting Started
+## React Compiler
 
-```bash
-# Clone the repository
-git clone https://github.com/gunagantisaipranay/TS-Group2.git
-cd TS-Group2
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-# Start the server
-npm start
+## Expanding the ESLint configuration
 
-# Open http://localhost:3000 in your browser
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-## Running Tests
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```bash
-npm test
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-## Project Structure
-
-```
-├── server.js            # HTTP server with API routes
-├── src/
-│   ├── subjects.js      # TS Group 2 exam subject data & syllabus
-│   └── coach.js         # AI Coach logic (cutoff, recommendations, skip suggestions)
-├── public/
-│   ├── index.html       # Web interface
-│   ├── style.css        # Styling
-│   └── app.js           # Frontend logic
-└── test/
-    ├── subjects.test.js # Subject data tests
-    └── coach.test.js    # Coach logic tests
-```
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/subjects` | Get all subjects with topics and marks |
-| POST | `/api/analyze` | Analyze scores — returns cutoff analysis, recommendations, and skip suggestions |
-
-## Tech Stack
-
-- **Backend:** Node.js (built-in `http` module, zero dependencies)
-- **Frontend:** Vanilla HTML, CSS, JavaScript
-- **Testing:** Node.js built-in test runner
