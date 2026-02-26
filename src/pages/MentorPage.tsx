@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { analyzeMentorResponse } from '../data/mentorResponses';
 import { usePerformance } from '../hooks/usePerformance';
+import { getGeminiResponse } from '../services/gemini';
 
 interface Message {
   role: 'user' | 'mentor';
@@ -27,27 +28,67 @@ export default function MentorPage() {
     }
   ]);
   const [input, setInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isThinking]);
 
-  const sendMessage = (text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-    const userMsg: Message = { role: 'user', text: trimmed, time };
-    const response = analyzeMentorResponse(trimmed, performance);
-    const mentorMsg: Message = { role: 'mentor', text: response, time };
-    setMessages(prev => [...prev, userMsg, mentorMsg]);
-    setInput('');
+  const buildPerformanceContext = () => {
+    const overallAcc = performance.totalAttempted > 0
+      ? Math.round((performance.totalCorrect / performance.totalAttempted) * 100)
+      : 0;
+    const subjectLines = Object.entries(performance.subjectStats)
+      .map(([sub, stats]) => {
+        const acc = stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0;
+        return `  - ${sub}: ${acc}% accuracy (${stats.attempted} attempted)`;
+      })
+      .join('\n');
+    return `[User Performance Data]
+Overall accuracy: ${overallAcc}% (${performance.totalAttempted} questions attempted)
+Daily streak: ${performance.dailyStreak} days
+Subject breakdown:
+${subjectLines || '  (no subject data yet)'}
+Weak topics: ${performance.weakTopics.join(', ') || 'none identified yet'}`;
   };
+
+  const getTimeString = () =>
+    new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+  const sendMessage = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || isThinking) return;
+    const time = getTimeString();
+    const userMsg: Message = { role: 'user', text: trimmed, time };
+    setMessages(prev => [...prev, userMsg]);
+    setInput('');
+
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+    if (apiKey) {
+      setIsThinking(true);
+      try {
+        const context = buildPerformanceContext();
+        const response = await getGeminiResponse(trimmed, context);
+        const mentorMsg: Message = { role: 'mentor', text: response, time: getTimeString() };
+        setMessages(prev => [...prev, mentorMsg]);
+      } finally {
+        setIsThinking(false);
+      }
+    } else {
+      const response = analyzeMentorResponse(trimmed, performance);
+      const mentorMsg: Message = { role: 'mentor', text: response, time };
+      setMessages(prev => [...prev, mentorMsg]);
+    }
+  };
+
+  const handleSend = () => { void sendMessage(input); };
+  const handleChip = (s: string) => () => { void sendMessage(s); };
 
   const handleKey = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage(input);
+      void sendMessage(input);
     }
   };
 
@@ -59,7 +100,7 @@ export default function MentorPage() {
     <div className="page">
       <div className="page-header">
         <h1>🤖 AI Mentor</h1>
-        <p className="subtitle">Rule-based strategy coach — personalized to your performance</p>
+        <p className="subtitle">AI-powered strategy coach — personalized to your performance</p>
       </div>
 
       <div className="mentor-layout">
@@ -79,12 +120,22 @@ export default function MentorPage() {
                 </div>
               </div>
             ))}
+            {isThinking && (
+              <div className="chat-bubble mentor">
+                <div className="bubble-header">
+                  <span className="bubble-role">🤖 Mentor</span>
+                </div>
+                <div className="bubble-text">
+                  <p>Thinking...</p>
+                </div>
+              </div>
+            )}
             <div ref={bottomRef} />
           </div>
 
           <div className="suggestions-row">
             {SUGGESTIONS.map((s, i) => (
-              <button key={i} className="suggestion-chip" onClick={() => sendMessage(s)}>
+              <button key={i} className="suggestion-chip" onClick={handleChip(s)}>
                 {s}
               </button>
             ))}
@@ -99,7 +150,7 @@ export default function MentorPage() {
               onKeyDown={handleKey}
               rows={2}
             />
-            <button className="send-btn" onClick={() => sendMessage(input)} disabled={!input.trim()}>
+            <button className="send-btn" onClick={handleSend} disabled={!input.trim() || isThinking}>
               Send ↑
             </button>
           </div>
