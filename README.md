@@ -1,4 +1,35 @@
-# React + TypeScript + Vite
+# TSPSC Group-2 Exam Prep App
+
+A React + TypeScript + Vite application for TSPSC Group-2 exam preparation, featuring an AI-powered mentor chat backed by Google Gemini.
+
+## AI Mentor Setup (Google Gemini)
+
+The mentor chat page uses **Google Gemini AI** (`gemini-2.0-flash`) when a valid API key is configured, and gracefully falls back to a built-in rule-based coach when no key is present.
+
+### Getting a free Gemini API key
+
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click **Create API key** and copy it
+
+### Setting the environment variable
+
+**Local development:** Create a `.env.local` file in the project root:
+
+```
+VITE_GEMINI_API_KEY=your_api_key_here
+```
+
+**Vercel deployment:** Add `VITE_GEMINI_API_KEY` as an environment variable in your Vercel project settings (Settings → Environment Variables).
+
+### Fallback behavior
+
+The mentor works **with or without** the API key:
+
+- **With API key** — messages are answered by Google Gemini AI with full natural-language reasoning.
+- **Without API key** — the app uses the built-in keyword-based coach in `src/data/mentorResponses.ts`. All features remain functional.
+
+---
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
